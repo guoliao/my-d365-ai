@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import requests
 import time
+import os
 from openai import OpenAI
 
 st.title("👨‍💻 温柔小妹架构师 (带服务器直连特权)")
@@ -15,8 +16,8 @@ st.title("👨‍💻 温柔小妹架构师 (带服务器直连特权)")
 # 修改后（安全 ✅）：注意没有引号！
 # ==========================================
 client = OpenAI(
-    api_key=st.secrets["GEMINI_API_KEY"], 
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/" 
+    api_key=st.secrets["DEEPSEEK_API_KEY"], 
+    base_url="https://api.deepseek.com" 
 )
 
 # ==========================================
@@ -135,7 +136,7 @@ if user_prompt:
             
             # 第二次呼叫大模型：让他看着数据总结
             second_response = client.chat.completions.create(
-                model="gemini-2.5-flash",
+                model="deepseek-chat",
                 messages=st.session_state.messages
             )
             
