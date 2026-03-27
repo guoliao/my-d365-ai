@@ -1,8 +1,9 @@
 import streamlit as st
 import json
+import requests
 from openai import OpenAI
 
-st.title("👨‍💻 暴躁架构师 (带服务器直连特权)")
+st.title("👨‍💻 温柔小妹架构师 (带服务器直连特权)")
 
 # ==========================================
 # 修改前（危险 ❌）：
@@ -27,29 +28,48 @@ def get_d365_environment_status(env_name):
     else:
         return json.dumps({"status": "Healthy", "cpu_load": "25%", "error": "None"})
 
+def get_super_lotto_latest():
+    """实时联网抓取体彩官方的大乐透最新开奖结果"""
+    # 这是中国体彩真实的公开数据接口
+    url = "https://www.lottery.gov.cn/kj/kjlb.html?dlt"
+    try:
+        # 就像用浏览器输入网址一样，让 Python 去请求这个 URL
+        res = requests.get(url)
+        data = res.json() # 将返回的数据转换为字典
+        
+        # 提取我们需要的数据
+        latest_draw = data['value']['list'][0]
+        result = {
+            "期号": latest_draw['lotteryDrawNum'],
+            "开奖日期": latest_draw['lotteryDrawTime'],
+            "前区号码": latest_draw['lotteryDrawResult'].split(' ')[:5],
+            "后区号码": latest_draw['lotteryDrawResult'].split(' ')[5:]
+        }
+        return json.dumps(result, ensure_ascii=False)
+    except Exception as e:
+        return json.dumps({"error": "获取大乐透数据失败，可能是网络问题"})
+
 tools_list = [
     {
         "type": "function",
         "function": {
-            "name": "get_d365_environment_status",
-            "description": "获取指定 D365 FO 环境的实时运行状态。当用户询问环境卡不卡、挂没挂时调用。",
+            "name": "get_super_lotto_latest",
+            "description": "获取最新一期超级大乐透的开奖结果。当用户询问大乐透、彩票开奖号码时必须调用此工具。",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "env_name": {"type": "string", "description": "环境名称，例如 'PROD', 'UAT'"}
-                },
-                "required": ["env_name"]
+                "properties": {}, # 查最新一期不需要用户提供参数，所以这里为空
+                "required": []
             }
         }
     }
 ]
 
 # ==========================================
-# 2. 记忆与人设初始化
+# 2. 记忆与人设初始化 (温柔调皮版)
 # ==========================================
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "system", "content": "你是极其暴躁的技术顶尖 D365 架构师。如果遇到查环境状态的问题，必须调用工具。拿到数据后，结合暴躁人设狠狠地输出。如果是常规问候，不要查服务器，直接高傲地嘲讽回应。"}
+        {"role": "system", "content": "你是一个有点温柔说话又带着调皮的D365架构师，但你最近天天想中彩票辞职。遇到查大乐透的问题，必须调用工具查真实数据。拿到结果后，用温柔且做着发财梦的语气回复用户。"}
     ]
 
 # ==========================================
@@ -66,7 +86,7 @@ for msg in st.session_state.messages:
 # ==========================================
 # 4. 核心交互逻辑
 # ==========================================
-user_prompt = st.chat_input("请向暴躁老哥请教（例如：大佬你好 / PROD环境挂了吗？）：")
+user_prompt = st.chat_input("请向小妹妹请教（例如：大佬你好 / PROD环境挂了吗？）：")
 
 if user_prompt:
     with st.chat_message("user"):
@@ -75,7 +95,7 @@ if user_prompt:
 
     with st.chat_message("assistant"):
         status_box = st.empty()
-        status_box.info("🧠 暴躁老哥正在思考...")
+        status_box.info("🧠 小妹妹正在思考...")
 
         # 第一次呼叫大模型
         response = client.chat.completions.create(
@@ -89,7 +109,7 @@ if user_prompt:
 
         # 【🛡️ 超级防御装甲】严格判断大模型是否需要使用工具
         if getattr(response_message, 'tool_calls', None) is not None:
-            status_box.warning("🚨 发现异常！老哥正在跨界登录系统后台拉取监控数据...")
+            status_box.warning("🚨 发现异常！小妹妹正在跨界登录系统后台拉取监控数据...")
             
             st.session_state.messages.append(response_message)
             
@@ -107,7 +127,7 @@ if user_prompt:
                         "content": tool_result,
                     })
 
-            status_box.success("✅ 后台数据已获取！老哥正在酝酿怎么骂你...")
+            status_box.success("✅ 后台数据已获取！小妹妹正在酝酿怎么回答...")
             
             # 第二次呼叫大模型：让他看着数据总结
             second_response = client.chat.completions.create(
