@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 import requests
+import time
 from openai import OpenAI
 
 st.title("👨‍💻 温柔小妹架构师 (带服务器直连特权)")
@@ -128,6 +129,9 @@ if user_prompt:
                     })
 
             status_box.success("✅ 后台数据已获取！小妹妹正在酝酿怎么回答...")
+
+            # 增加这一行：让程序在这里强制发呆 3 秒，防止被大模型服务器限流
+            time.sleep(3)
             
             # 第二次呼叫大模型：让他看着数据总结
             second_response = client.chat.completions.create(
