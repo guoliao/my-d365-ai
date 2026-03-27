@@ -17,7 +17,7 @@ st.title("👨‍💻 温柔小妹架构师 (带服务器直连特权)")
 # ==========================================
 client = OpenAI(
     api_key=st.secrets["DEEPSEEK_API_KEY"], 
-    base_url="https://api.deepseek.com" 
+    base_url="https://api.deepseek.com/v1" 
 )
 
 # ==========================================
@@ -128,6 +128,17 @@ if user_prompt:
                         "name": function_name,
                         "content": tool_result,
                     })
+                elif function.name == "get_super_lotto_latest":
+                    status_box.warning("🔮 正在连接体彩中心...")
+                    tool_result = get_super_lotto_latest()
+                        
+                    # 把工具结果存入历史
+                    st.session_state.messages.append({
+                        "tool_call_id": tool_call.id,
+                        "role": "tool",
+                        "name": function_name,
+                        "content": tool_result,
+                        })
 
             status_box.success("✅ 后台数据已获取！小妹妹正在酝酿怎么回答...")
 
