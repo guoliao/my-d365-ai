@@ -4,8 +4,16 @@ from openai import OpenAI
 
 st.title("👨‍💻 暴躁架构师 (带服务器直连特权)")
 
+# ==========================================
+# 修改前（危险 ❌）：
+# api_key="AIzaSy...你那一长串密码...", 
+# ==========================================
+
+# ==========================================
+# 修改后（安全 ✅）：注意没有引号！
+# ==========================================
 client = OpenAI(
-    api_key="AIzaSyAxRh1oWb1OOTVUBUvIWElOxWs4yIi5suI", 
+    api_key=st.secrets["GEMINI_API_KEY"], 
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/" 
 )
 
