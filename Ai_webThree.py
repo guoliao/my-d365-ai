@@ -128,7 +128,7 @@ if user_prompt:
                         "name": function_name,
                         "content": tool_result,
                     })
-                elif function.name == "get_super_lotto_latest":
+                elif function_name == "get_super_lotto_latest":
                     status_box.warning("🔮 正在连接体彩中心...")
                     tool_result = get_super_lotto_latest()
                         
