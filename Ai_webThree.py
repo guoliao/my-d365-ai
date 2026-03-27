@@ -101,7 +101,7 @@ if user_prompt:
 
         # 第一次呼叫大模型
         response = client.chat.completions.create(
-            model="gemini-2.5-flash",
+            model="deepseek-chat",
             messages=st.session_state.messages,
             tools=tools_list,  
             tool_choice="auto"
