@@ -33,7 +33,7 @@ def get_d365_environment_status(env_name):
 def get_super_lotto_latest():
     """实时联网抓取体彩官方的大乐透最新开奖结果"""
     # 这是中国体彩真实的公开数据接口
-    url = "https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry?gameNo=85&provinceId=0&pageSize=1&isVerify=1&pageNo=1"
+    url = "https://www.lottery.gov.cn/kj/kjlb.html?dlt"
     try:
         # 就像用浏览器输入网址一样，让 Python 去请求这个 URL
         res = requests.get(url)
